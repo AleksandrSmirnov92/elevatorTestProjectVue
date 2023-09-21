@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
-
 <template>
-  <span>Тут будет лифт</span>
+  <div class="wrapper"><Building /></div>
 </template>
-
-<style scoped></style>
+<script setup lang="ts">
+import Building from "./views/Building.vue";
+</script>
+<style lang="css" scoped>
+.wrapper {
+  height: 100%;
+}
+</style>
