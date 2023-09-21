@@ -2,7 +2,7 @@
   <div
     class="elevator"
     :style="{
-      transform: `translateY(${floorNumber === '2' ? -143 : 0}px)`,
+      transform: `translateY(${true === '2' ? -143 : 0}px)`,
       transition: `transform 1s ease-in-out`,
     }"
   >
@@ -11,11 +11,12 @@
 </template>
 
 <script setup>
-import { toRefs } from "vue";
-const props = defineProps({
-  floorNumber: String,
-});
-const { floorNumber } = toRefs(props);
+import { toRefs, watch, computed } from "vue";
+const props = defineProps({ callQueue: Array });
+const { callQueue } = toRefs(props);
+watch(callQueue, (newCallQueue) =>
+  console.log("массив изменился", newCallQueue)
+);
 </script>
 
 <style lang="css" scoped>

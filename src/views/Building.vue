@@ -2,7 +2,7 @@
   <div class="bulding-container">
     <div class="bulding">
       <div class="building__shaft">
-        <Shaft v-for="item in buildingInfo.shaftCount" :floorNumber="count" />
+        <Shaft v-for="item in buildingInfo.shaftCount" :callQueue="callQueue" />
       </div>
       <div class="building__floors">
         <Floor
@@ -18,16 +18,16 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { toRef, reactive } from "vue";
+import { toRef, reactive, computed, watch } from "vue";
 const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
 const callQueue = toRef([]);
-const count = toRef("0");
 const clickFloor = (floor: string) => {
-  callQueue.value.push({ idFloor: floor });
-  console.log(callQueue.value);
+  const newCall = [...callQueue.value];
+  newCall.push({ idFloor: floor });
+  callQueue.value = newCall;
 };
 </script>
 
