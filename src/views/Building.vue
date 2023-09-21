@@ -23,10 +23,11 @@ const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
+const callQueue = toRef([]);
 const count = toRef("0");
 const clickFloor = (floor: string) => {
-  count.value = floor;
-  console.log(count.value);
+  callQueue.value.push({ idFloor: floor });
+  console.log(callQueue.value);
 };
 </script>
 
