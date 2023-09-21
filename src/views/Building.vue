@@ -18,16 +18,17 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { toRef, reactive, computed, watch } from "vue";
+import { reactive, toRef } from "vue";
 const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
-const callQueue = toRef([]);
+const callQueue: any = toRef([]);
+
 const clickFloor = (floor: string) => {
-  const newCall = [...callQueue.value];
-  newCall.push({ idFloor: floor });
-  callQueue.value = newCall;
+  callQueue.value.push({ floorNumber: floor });
+  const call = [...callQueue.value];
+  callQueue.value = call;
 };
 </script>
 

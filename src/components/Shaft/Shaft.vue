@@ -8,7 +8,7 @@
 import Elevator from "../Elevator/Elevator.vue";
 import { toRefs, toRef } from "vue";
 const props = defineProps({
-  callQueue: Array,
+  callQueue: { type: Array },
 });
 const { callQueue } = toRefs(props);
 </script>
