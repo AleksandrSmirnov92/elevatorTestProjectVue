@@ -2,7 +2,7 @@
   <div class="bulding-container">
     <div class="bulding">
       <div class="building__shaft">
-        <Shaft v-for="item in buildingInfo.shaftCount" :callQueue="callQueue" />
+        <Shaft v-for="item in buildingInfo.shaftCount" :tasks="tasks" />
       </div>
       <div class="building__floors">
         <Floor
@@ -18,18 +18,38 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { reactive, toRef } from "vue";
+import { reactive, toRef, watch } from "vue";
 const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
-const callQueue: any = toRef([]);
-
-const clickFloor = (floor: string) => {
-  callQueue.value.push({ floorNumber: floor });
-  const call = [...callQueue.value];
-  callQueue.value = call;
+const callQueue = [];
+const tasks = toRef(0);
+let currentTimer = null;
+const moveLift = () => {
+  if (currentTimer) {
+    return;
+  }
+  const task = callQueue.shift();
+  if (task == null) {
+    return;
+  }
+  console.log(task);
+  tasks.value = task;
+  currentTimer = setTimeout(() => {
+    (currentTimer = null), moveLift();
+  }, 1000 * task);
 };
+moveLift();
+const clickFloor = (task: string) => {
+  callQueue.push(Number(task));
+  moveLift();
+};
+
+// watch(callQueue, (newCall) => moveLift(newCall));
+// for (let i = 0; i < callQueue.value.length; i++) {}
+// const newCallQueue = [...callQueue.value];
+// callQueue.value = newCallQueue;
 </script>
 
 <style lang="css" scoped>

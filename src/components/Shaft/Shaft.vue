@@ -1,6 +1,6 @@
 <template>
   <div class="shaft">
-    <Elevator :callQueue="callQueue" />
+    <Elevator :tasks="tasks" />
   </div>
 </template>
 
@@ -8,9 +8,9 @@
 import Elevator from "../Elevator/Elevator.vue";
 import { toRefs, toRef } from "vue";
 const props = defineProps({
-  callQueue: { type: Array },
+  tasks: { type: Number },
 });
-const { callQueue } = toRefs(props);
+const { tasks } = toRefs(props);
 </script>
 
 <style lang="css" scoped>

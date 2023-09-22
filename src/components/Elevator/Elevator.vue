@@ -3,7 +3,7 @@
     class="elevator"
     :style="{
       transform: `translateY(${translateY}px)`,
-      transition: `transform ${timeS}s ease-in-out`,
+      transition: `transform ${timeMove}s ease-in-out`,
     }"
   >
     <span>Лифт</span>
@@ -12,33 +12,26 @@
 
 <script setup>
 import { toRefs, watch, toRef } from "vue";
-const props = defineProps({ callQueue: Array });
-const { callQueue } = toRefs(props);
+const props = defineProps({ tasks: Number });
+const { tasks } = toRefs(props);
 const translateY = toRef(0);
-const timeS = toRef(0);
-const newCall = toRef(0);
-const handleCall = (floorOne) => {
-  if (newCall.value < Number(floorOne)) {
-    console.log(newCall.value, "tyt");
-    console.log(Number(floorOne) - newCall.value - 1);
-    newCall.value = Number(floorOne) - 1;
-    translateY.value = (1 - Number(floorOne)) * 135;
-    timeS.value = newCall.value;
-    callQueue.value.shift();
+const timeMove = toRef(1);
+let val = 0;
+const handleMove = () => {
+  if (val < tasks.value) {
+    timeMove.value = tasks.value - val;
+    val = tasks.value;
+    console.log("больше");
   }
-  if (newCall.value > Number(floorOne)) {
-    console.log(newCall.value - Number(floorOne));
-    translateY.value = (1 - Number(floorOne)) * 135;
-    timeS.value = newCall.value - Number(floorOne);
-    newCall.value = newCall.value - Number(floorOne);
-    console.log(newCall.value);
-    callQueue.value.shift();
+  if (val > tasks.value) {
+    timeMove.value = val - tasks.value;
+    val = tasks.value;
+    console.log("меньше");
   }
 };
-watch(callQueue, (newValue) => {
-  for (let i = 0; i < newValue.length; i++) {
-    handleCall(newValue[0].floorNumber);
-  }
+watch(tasks, (newVall) => {
+  console.log(handleMove());
+  translateY.value = -145 * (newVall - 1);
 });
 </script>
 
