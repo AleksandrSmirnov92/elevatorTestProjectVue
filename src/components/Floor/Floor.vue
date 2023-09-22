@@ -1,19 +1,25 @@
 <template>
-  <div class="floor">
+  <div ref="heightFloor" class="floor">
     <span class="floor-number">Этаж {{ floorNumber }}</span>
-    <button
-      class="floor-btn"
-      @click="$emit('clickFloor', floorNumber)"
-    ></button>
+    <button class="floor-btn" @click="$emit('clickFloor', getValue())"></button>
   </div>
 </template>
 
 <script setup>
-import { toRefs } from "vue";
+import { toRefs, ref } from "vue";
+const heightFloor = ref(null);
 const props = defineProps({
   floorNumber: { type: String, required: true },
 });
+
 const { floorNumber } = toRefs(props);
+const getValue = () => {
+  let infoFloor = {
+    height: heightFloor.value.clientHeight,
+    floor: floorNumber.value,
+  };
+  return infoFloor;
+};
 </script>
 
 <style lang="css" scoped>

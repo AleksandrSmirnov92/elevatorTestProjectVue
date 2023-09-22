@@ -3,7 +3,7 @@
     class="elevator"
     :style="{
       transform: `translateY(${translateY}px)`,
-      transition: `transform ${timeMove}s ease-in-out`,
+      transition: `transform ${timeMove}s linear`,
     }"
   >
     <span>Лифт</span>
@@ -16,21 +16,22 @@ const props = defineProps({ tasks: Number });
 const { tasks } = toRefs(props);
 const translateY = toRef(0);
 const timeMove = toRef(1);
-let val = 0;
+let val = 1;
 const handleMove = () => {
   if (val < tasks.value) {
+    console.log(tasks.value - val);
     timeMove.value = tasks.value - val;
     val = tasks.value;
-    console.log("больше");
   }
   if (val > tasks.value) {
+    console.log(val - tasks.value);
     timeMove.value = val - tasks.value;
     val = tasks.value;
-    console.log("меньше");
+    // console.log("меньше");
   }
 };
 watch(tasks, (newVall) => {
-  console.log(handleMove());
+  handleMove();
   translateY.value = -145 * (newVall - 1);
 });
 </script>

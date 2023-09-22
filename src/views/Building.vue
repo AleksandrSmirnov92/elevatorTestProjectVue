@@ -18,14 +18,14 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { reactive, toRef, watch } from "vue";
+import { reactive, toRef } from "vue";
 const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
-const callQueue = [];
+const callQueue: any = [];
 const tasks = toRef(0);
-let currentTimer = null;
+let currentTimer: any = null;
 const moveLift = () => {
   if (currentTimer) {
     return;
@@ -41,8 +41,9 @@ const moveLift = () => {
   }, 1000 * task);
 };
 moveLift();
-const clickFloor = (task: string) => {
-  callQueue.push(Number(task));
+const clickFloor = (floor: any) => {
+  console.log(floor);
+  callQueue.push(Number(floor));
   moveLift();
 };
 
