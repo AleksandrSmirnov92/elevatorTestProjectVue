@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="heightElevator"
     class="elevator"
     :style="{
       transform: `translateY(${translateY}px)`,
@@ -11,7 +12,8 @@
 </template>
 
 <script setup>
-import { toRefs, watch, toRef } from "vue";
+import { toRefs, watch, toRef, ref } from "vue";
+const heightElevator = ref(null);
 const props = defineProps({ tasks: Number });
 const { tasks } = toRefs(props);
 const translateY = toRef(0);
@@ -32,7 +34,7 @@ const handleMove = () => {
 };
 watch(tasks, (newVall) => {
   handleMove();
-  translateY.value = -145 * (newVall - 1);
+  translateY.value = -heightElevator.value.clientHeight * (newVall - 1);
 });
 </script>
 
@@ -43,7 +45,7 @@ watch(tasks, (newVall) => {
   align-items: center;
   color: white;
   width: 100%;
-  height: 135px;
+  height: calc((100vh / 5));
   align-self: flex-end;
   background-color: #854d0e;
 }

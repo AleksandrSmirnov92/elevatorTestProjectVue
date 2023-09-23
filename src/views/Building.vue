@@ -25,6 +25,7 @@ const buildingInfo = reactive({
 });
 const callQueue: any = [];
 const tasks = toRef(0);
+const heightLift = toRef(0);
 let currentTimer: any = null;
 const moveLift = () => {
   if (currentTimer) {
@@ -34,23 +35,17 @@ const moveLift = () => {
   if (task == null) {
     return;
   }
-  console.log(task);
-  tasks.value = task;
+  console.log(task.floor);
+  tasks.value = Number(task.floor);
   currentTimer = setTimeout(() => {
     (currentTimer = null), moveLift();
-  }, 1000 * task);
+  }, 1000 * Number(task.floor));
 };
 moveLift();
-const clickFloor = (floor: any) => {
-  console.log(floor);
-  callQueue.push(Number(floor));
+const clickFloor = (floorInfo: { height: number; floor: string }) => {
+  callQueue.push(floorInfo);
   moveLift();
 };
-
-// watch(callQueue, (newCall) => moveLift(newCall));
-// for (let i = 0; i < callQueue.value.length; i++) {}
-// const newCallQueue = [...callQueue.value];
-// callQueue.value = newCallQueue;
 </script>
 
 <style lang="css" scoped>
@@ -67,13 +62,12 @@ const clickFloor = (floor: any) => {
 .building__floors {
   display: flex;
   flex-direction: column;
-  /* flex-wrap: wrap;
-  align-content: space-around; */
-  padding-top: 0.5em;
+
   width: 10%;
   height: 100%;
   background-color: white;
 }
+
 .building__shaft {
   display: flex;
   width: 20%;

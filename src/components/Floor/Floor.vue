@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { toRefs, ref } from "vue";
+import { toRefs, ref, watch } from "vue";
 const heightFloor = ref(null);
 const props = defineProps({
   floorNumber: { type: String, required: true },
