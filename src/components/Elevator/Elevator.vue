@@ -6,6 +6,7 @@
       transform: `translateY(${translateY}px)`,
       transition: `transform ${timeMove}s linear`,
     }"
+    :class="!toggleClass ? '' : 'inactive'"
   >
     <span>Лифт</span>
   </div>
@@ -19,22 +20,40 @@ const { tasks } = toRefs(props);
 const translateY = toRef(0);
 const timeMove = toRef(1);
 let val = 1;
+let toggleClass = toRef(false);
 const handleMove = () => {
   if (val < tasks.value) {
-    console.log(tasks.value - val);
+    // console.log("Время анимации вверх", tasks.value - val);
     timeMove.value = tasks.value - val;
+    setTimeout(() => {
+      const stop = setInterval(() => {
+        toggleClass.value = !toggleClass.value;
+      }, 500);
+      setTimeout(() => {
+        clearInterval(stop);
+        toggleClass.value = false;
+      }, 3000);
+    }, 1000 * timeMove.value);
     val = tasks.value;
   }
   if (val > tasks.value) {
-    console.log(val - tasks.value);
+    // console.log("Время анимации вниз", val - tasks.value);
     timeMove.value = val - tasks.value;
+    setTimeout(() => {
+      const stop = setInterval(() => {
+        toggleClass.value = !toggleClass.value;
+      }, 500);
+      setTimeout(() => {
+        toggleClass.value = false;
+        clearInterval(stop);
+      }, 3000);
+    }, 1000 * timeMove.value);
     val = tasks.value;
-    // console.log("меньше");
   }
 };
-watch(tasks, (newVall) => {
+watch(tasks, (newTasks) => {
   handleMove();
-  translateY.value = -heightElevator.value.clientHeight * (newVall - 1);
+  translateY.value = -heightElevator.value.clientHeight * (newTasks - 1);
 });
 </script>
 
@@ -51,5 +70,11 @@ watch(tasks, (newVall) => {
 }
 .elevatorUp {
   transform: translateY(-143px);
+}
+.active {
+  background-color: red;
+}
+.inactive {
+  background-color: aquamarine;
 }
 </style>

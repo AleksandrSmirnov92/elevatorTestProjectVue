@@ -23,28 +23,47 @@ const buildingInfo = reactive({
   shaftCount: ["1"],
   floorsCount: ["1", "2", "3", "4", "5"],
 });
+let initialVal = 1;
+let timeMove = 1;
 const callQueue: any = [];
 const tasks = toRef(0);
-const heightLift = toRef(0);
 let currentTimer: any = null;
+let animateActive = true;
+const handleMove = (s: number) => {
+  if (initialVal < s) {
+    timeMove = s - initialVal;
+    initialVal = s;
+  }
+  if (initialVal > s) {
+    timeMove = initialVal - s;
+    initialVal = s;
+  }
+};
 const moveLift = () => {
+  animateActive = false;
   if (currentTimer) {
     return;
   }
   const task = callQueue.shift();
   if (task == null) {
+    animateActive = true;
     return;
   }
-  console.log(task.floor);
-  tasks.value = Number(task.floor);
+  // console.log(task);
+  tasks.value = Number(task);
+  handleMove(Number(task));
   currentTimer = setTimeout(() => {
     (currentTimer = null), moveLift();
-  }, 1000 * Number(task.floor));
+    console.log("Анимация прошла", task);
+  }, 1000 * (timeMove + 3));
 };
-moveLift();
-const clickFloor = (floorInfo: { height: number; floor: string }) => {
-  callQueue.push(floorInfo);
-  moveLift();
+// moveLift();
+const clickFloor = (floorNumber: string) => {
+  callQueue.push(floorNumber);
+  if (animateActive) {
+    handleMove(Number(floorNumber));
+    moveLift();
+  }
 };
 </script>
 
