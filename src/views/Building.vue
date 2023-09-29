@@ -131,7 +131,6 @@ const clickFloor = (floorNumber: number) => {
   // if (animateActive) {
   for (let i = 0; i < buildingInfo.value.shaftCount.length; i++) {
     if (!buildingInfo.value.shaftCount[i].active) {
-      console.log(buildingInfo.value.shaftCount[i]);
       elevatorMotionHandler(floorNumber);
       return buildingInfo.value.shaftCount[i].taskQueueHandler();
     }
