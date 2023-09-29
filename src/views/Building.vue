@@ -23,35 +23,32 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { currentElevator } from "../helpers/currentElevator.ts";
-import { reactive, toRef, ref } from "vue";
+import { currentElevator } from "../helpers/currentElevator";
+import { ref } from "vue";
 const buildingInfo = ref({
   shaftCount: [
     {
       id: 1,
       floorPosition: 1,
       active: false,
-      taskQueueHandler() {
-        // animateActive = false;
+      activated(currentTimer: number | null) {
         if (currentTimer) {
           return;
         }
         const task = callQueue.shift();
         if (task == null) {
-          animateActive = true;
+          this.active = false;
           return;
         }
         this.active = true;
-        tasks.value = task;
-        currentElevator(task, buildingInfo.value.shaftCount);
+        this.floorPosition = task;
+        // currentElevator(task, buildingInfo.value.shaftCount);
         elevatorMotionHandler(task);
-
         currentTimer = setTimeout(() => {
           currentTimer = null;
-          this.active = false;
-          console.log(this.active);
-          this.taskQueueHandler();
-          // console.log("Анимация прошла", task);
+
+          this.activated(currentTimer);
+          console.log("Анимация прошла", task);
         }, 1000 * (timeMove + 3));
       },
     },
@@ -59,28 +56,25 @@ const buildingInfo = ref({
       id: 2,
       floorPosition: 1,
       active: false,
-      taskQueueHandler() {
-        console.log(this);
-        // animateActive = false;
+      activated(currentTimer: number | null) {
+        this.active = true;
         if (currentTimer) {
           return;
         }
         const task = callQueue.shift();
         if (task == null) {
-          animateActive = true;
+          this.active = false;
           return;
         }
-        this.active = true;
-        tasks.value = task;
-        currentElevator(task, buildingInfo.value.shaftCount);
-        elevatorMotionHandler(task);
+        this.floorPosition = task;
+        // currentElevator(task, buildingInfo.value.shaftCount); //проблема тут
 
+        elevatorMotionHandler(task);
         currentTimer = setTimeout(() => {
           currentTimer = null;
-          this.active = false;
-          console.log(this.active);
-          this.taskQueueHandler();
-          // console.log("Анимация прошла", task);
+
+          this.activated(currentTimer);
+          console.log("Анимация прошла", task);
         }, 1000 * (timeMove + 3));
       },
     },
@@ -92,7 +86,7 @@ const tasks = ref(0);
 let initialSeconds = 1;
 let timeMove = 1;
 let currentTimer: any = null;
-let animateActive = true;
+// let animateActive = true;
 const elevatorMotionHandler = (currentSeconds: number) => {
   if (initialSeconds < currentSeconds) {
     timeMove = currentSeconds - initialSeconds;
@@ -104,7 +98,6 @@ const elevatorMotionHandler = (currentSeconds: number) => {
   }
 };
 // const taskQueueHandler = () => {
-//   this.active = true;
 //   animateActive = false;
 //   if (currentTimer) {
 //     return;
@@ -120,7 +113,6 @@ const elevatorMotionHandler = (currentSeconds: number) => {
 
 //   currentTimer = setTimeout(() => {
 //     currentTimer = null;
-//     this.active = false;
 //     taskQueueHandler();
 //     console.log("Анимация прошла", task);
 //   }, 1000 * (timeMove + 3));
@@ -128,15 +120,15 @@ const elevatorMotionHandler = (currentSeconds: number) => {
 
 const clickFloor = (floorNumber: number) => {
   callQueue.push(floorNumber);
-  // if (animateActive) {
-  for (let i = 0; i < buildingInfo.value.shaftCount.length; i++) {
-    if (!buildingInfo.value.shaftCount[i].active) {
-      elevatorMotionHandler(floorNumber);
-      return buildingInfo.value.shaftCount[i].taskQueueHandler();
-    }
+
+  if (buildingInfo.value.shaftCount.find((item) => item.active == false)) {
+    buildingInfo.value.shaftCount
+      .find((item) => item.active === false)
+      ?.activated(currentTimer);
   }
-  // elevatorMotionHandler(floorNumber);
-  // taskQueueHandler();
+  // if (animateActive) {
+  //   elevatorMotionHandler(floorNumber);
+  //   taskQueueHandler();
   // }
 };
 </script>
