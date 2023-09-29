@@ -9,7 +9,7 @@
 import { toRefs, watch } from "vue";
 
 const props = defineProps({
-  floorNumber: { type: String, required: true },
+  floorNumber: { type: Number, required: true },
 });
 
 const { floorNumber } = toRefs(props);

@@ -18,28 +18,28 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { reactive, toRef } from "vue";
-const buildingInfo = reactive({
-  shaftCount: ["1"],
-  floorsCount: ["1", "2", "3", "4", "5"],
+import { reactive, toRef, ref } from "vue";
+const buildingInfo = ref({
+  shaftCount: [{}, {}],
+  floorsCount: [1, 2, 3, 4, 5],
 });
-let initialVal = 1;
-let timeMove = 1;
 const callQueue: any = [];
-const tasks = toRef(0);
+const tasks = ref(0);
+let initialSeconds = 1;
+let timeMove = 1;
 let currentTimer: any = null;
 let animateActive = true;
-const handleMove = (s: number) => {
-  if (initialVal < s) {
-    timeMove = s - initialVal;
-    initialVal = s;
+const elevatorMotionHandler = (currentSeconds: number) => {
+  if (initialSeconds < currentSeconds) {
+    timeMove = currentSeconds - initialSeconds;
+    initialSeconds = currentSeconds;
   }
-  if (initialVal > s) {
-    timeMove = initialVal - s;
-    initialVal = s;
+  if (initialSeconds > currentSeconds) {
+    timeMove = initialSeconds - currentSeconds;
+    initialSeconds = currentSeconds;
   }
 };
-const moveLift = () => {
+const taskQueueHandler = () => {
   animateActive = false;
   if (currentTimer) {
     return;
@@ -49,20 +49,19 @@ const moveLift = () => {
     animateActive = true;
     return;
   }
-  // console.log(task);
-  tasks.value = Number(task);
-  handleMove(Number(task));
+  tasks.value = task;
+  elevatorMotionHandler(task);
   currentTimer = setTimeout(() => {
-    (currentTimer = null), moveLift();
+    (currentTimer = null), taskQueueHandler();
     console.log("Анимация прошла", task);
   }, 1000 * (timeMove + 3));
 };
-// moveLift();
-const clickFloor = (floorNumber: string) => {
+
+const clickFloor = (floorNumber: number) => {
   callQueue.push(floorNumber);
   if (animateActive) {
-    handleMove(Number(floorNumber));
-    moveLift();
+    elevatorMotionHandler(floorNumber);
+    taskQueueHandler();
   }
 };
 </script>

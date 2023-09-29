@@ -15,6 +15,7 @@ const { tasks } = toRefs(props);
 
 <style lang="css" scoped>
 .shaft {
+  border-left: 1px solid black;
   display: flex;
   width: 100%;
 }
