@@ -2,7 +2,12 @@
   <div class="bulding-container">
     <div class="bulding">
       <div class="building__shaft">
-        <Shaft v-for="item in buildingInfo.shaftCount" :tasks="tasks" />
+        <Shaft
+          v-for="item in buildingInfo.shaftCount.slice().reverse()"
+          :tasks="tasks"
+          :floorPosition="item.floorPosition"
+          :key="item.id"
+        />
       </div>
       <div class="building__floors">
         <Floor
@@ -18,9 +23,68 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
+import { currentElevator } from "../helpers/currentElevator.ts";
 import { reactive, toRef, ref } from "vue";
 const buildingInfo = ref({
-  shaftCount: [{}, {}],
+  shaftCount: [
+    {
+      id: 1,
+      floorPosition: 1,
+      active: false,
+      taskQueueHandler() {
+        // animateActive = false;
+        if (currentTimer) {
+          return;
+        }
+        const task = callQueue.shift();
+        if (task == null) {
+          animateActive = true;
+          return;
+        }
+        this.active = true;
+        tasks.value = task;
+        currentElevator(task, buildingInfo.value.shaftCount);
+        elevatorMotionHandler(task);
+
+        currentTimer = setTimeout(() => {
+          currentTimer = null;
+          this.active = false;
+          console.log(this.active);
+          this.taskQueueHandler();
+          // console.log("Анимация прошла", task);
+        }, 1000 * (timeMove + 3));
+      },
+    },
+    {
+      id: 2,
+      floorPosition: 1,
+      active: false,
+      taskQueueHandler() {
+        console.log(this);
+        // animateActive = false;
+        if (currentTimer) {
+          return;
+        }
+        const task = callQueue.shift();
+        if (task == null) {
+          animateActive = true;
+          return;
+        }
+        this.active = true;
+        tasks.value = task;
+        currentElevator(task, buildingInfo.value.shaftCount);
+        elevatorMotionHandler(task);
+
+        currentTimer = setTimeout(() => {
+          currentTimer = null;
+          this.active = false;
+          console.log(this.active);
+          this.taskQueueHandler();
+          // console.log("Анимация прошла", task);
+        }, 1000 * (timeMove + 3));
+      },
+    },
+  ],
   floorsCount: [1, 2, 3, 4, 5],
 });
 const callQueue: any = [];
@@ -39,30 +103,42 @@ const elevatorMotionHandler = (currentSeconds: number) => {
     initialSeconds = currentSeconds;
   }
 };
-const taskQueueHandler = () => {
-  animateActive = false;
-  if (currentTimer) {
-    return;
-  }
-  const task = callQueue.shift();
-  if (task == null) {
-    animateActive = true;
-    return;
-  }
-  tasks.value = task;
-  elevatorMotionHandler(task);
-  currentTimer = setTimeout(() => {
-    (currentTimer = null), taskQueueHandler();
-    console.log("Анимация прошла", task);
-  }, 1000 * (timeMove + 3));
-};
+// const taskQueueHandler = () => {
+//   this.active = true;
+//   animateActive = false;
+//   if (currentTimer) {
+//     return;
+//   }
+//   const task = callQueue.shift();
+//   if (task == null) {
+//     animateActive = true;
+//     return;
+//   }
+//   tasks.value = task;
+//   currentElevator(task, buildingInfo.value.shaftCount);
+//   elevatorMotionHandler(task);
+
+//   currentTimer = setTimeout(() => {
+//     currentTimer = null;
+//     this.active = false;
+//     taskQueueHandler();
+//     console.log("Анимация прошла", task);
+//   }, 1000 * (timeMove + 3));
+// };
 
 const clickFloor = (floorNumber: number) => {
   callQueue.push(floorNumber);
-  if (animateActive) {
-    elevatorMotionHandler(floorNumber);
-    taskQueueHandler();
+  // if (animateActive) {
+  for (let i = 0; i < buildingInfo.value.shaftCount.length; i++) {
+    if (!buildingInfo.value.shaftCount[i].active) {
+      console.log(buildingInfo.value.shaftCount[i]);
+      elevatorMotionHandler(floorNumber);
+      return buildingInfo.value.shaftCount[i].taskQueueHandler();
+    }
   }
+  // elevatorMotionHandler(floorNumber);
+  // taskQueueHandler();
+  // }
 };
 </script>
 
