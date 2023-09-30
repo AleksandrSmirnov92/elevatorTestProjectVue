@@ -30,8 +30,11 @@ const buildingInfo = ref({
     {
       id: 1,
       floorPosition: 1,
+
       active: false,
-      activated(currentTimer: number | null) {
+      initialSeconds: 1,
+      activated(currentTimer: number | null, floorNumber: number) {
+        this.active = true;
         if (currentTimer) {
           return;
         }
@@ -40,13 +43,12 @@ const buildingInfo = ref({
           this.active = false;
           return;
         }
-        this.active = true;
-        this.floorPosition = task;
+
+        this.floorPosition = floorNumber ? floorNumber : task;
+        elevatorMotionHandler(task, this.initialSeconds);
         // currentElevator(task, buildingInfo.value.shaftCount);
-        elevatorMotionHandler(task);
         currentTimer = setTimeout(() => {
           currentTimer = null;
-
           this.activated(currentTimer);
           console.log("Анимация прошла", task);
         }, 1000 * (timeMove + 3));
@@ -56,8 +58,11 @@ const buildingInfo = ref({
       id: 2,
       floorPosition: 1,
       active: false,
-      activated(currentTimer: number | null) {
+      timeMove: 1,
+      initialSeconds: 1,
+      activated(currentTimer: number | null, floorNumber: number) {
         this.active = true;
+
         if (currentTimer) {
           return;
         }
@@ -66,13 +71,12 @@ const buildingInfo = ref({
           this.active = false;
           return;
         }
-        this.floorPosition = task;
-        // currentElevator(task, buildingInfo.value.shaftCount); //проблема тут
 
-        elevatorMotionHandler(task);
+        this.floorPosition = floorNumber ? floorNumber : task;
+        elevatorMotionHandler(task, this.initialSeconds);
+        // currentElevator(task, buildingInfo.value.shaftCount); //проблема тут
         currentTimer = setTimeout(() => {
           currentTimer = null;
-
           this.activated(currentTimer);
           console.log("Анимация прошла", task);
         }, 1000 * (timeMove + 3));
@@ -83,11 +87,12 @@ const buildingInfo = ref({
 });
 const callQueue: any = [];
 const tasks = ref(0);
-let initialSeconds = 1;
+// let initialSeconds = 1;
 let timeMove = 1;
 let currentTimer: any = null;
 // let animateActive = true;
-const elevatorMotionHandler = (currentSeconds: number) => {
+
+const elevatorMotionHandler = (currentSeconds: number, initialSeconds) => {
   if (initialSeconds < currentSeconds) {
     timeMove = currentSeconds - initialSeconds;
     initialSeconds = currentSeconds;
@@ -120,11 +125,29 @@ const elevatorMotionHandler = (currentSeconds: number) => {
 
 const clickFloor = (floorNumber: number) => {
   callQueue.push(floorNumber);
-
   if (buildingInfo.value.shaftCount.find((item) => item.active == false)) {
-    buildingInfo.value.shaftCount
-      .find((item) => item.active === false)
-      ?.activated(currentTimer);
+    function findClosestInactiveElement(arr, number) {
+      let closestElement = null;
+      let closestDifference = Infinity;
+      for (const element of arr) {
+        const difference = Math.abs(number - element.floorPosition);
+        if (!element.active && difference < closestDifference) {
+          closestElement = element;
+          closestDifference = difference;
+        }
+      }
+      console.log(closestElement, arr);
+      return closestElement;
+    }
+
+    findClosestInactiveElement(
+      buildingInfo.value.shaftCount,
+      floorNumber
+    ).activated(currentTimer, floorNumber);
+
+    // buildingInfo.value.shaftCount
+    //   .find((item) => item.active === false)
+    //   ?.activated(currentTimer, floorNumber);
   }
   // if (animateActive) {
   //   elevatorMotionHandler(floorNumber);
