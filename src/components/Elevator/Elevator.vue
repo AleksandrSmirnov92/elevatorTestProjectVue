@@ -16,10 +16,9 @@
 import { toRefs, watch, ref } from "vue";
 const heightElevator = ref(null);
 const props = defineProps({
-  tasks: Number,
   floorPosition: Number,
 });
-const { tasks, floorPosition } = toRefs(props);
+const { floorPosition } = toRefs(props);
 const translateY = ref(0);
 const timeMove = ref(1);
 let initialSeconds = 1;
@@ -59,42 +58,6 @@ const animationElevator = (newFloorPosition) => {
 watch(floorPosition, (newFloorPosition) => {
   animationElevator(newFloorPosition);
 });
-
-// const handleMove = (newTasks) => {
-//   if (initialSeconds < tasks.value) {
-//     // console.log("Время анимации вверх", tasks.value - initialSeconds);
-//     translateY.value = -heightElevator.value.clientHeight * (newTasks - 1);
-//     timeMove.value = tasks.value - initialSeconds;
-//     setTimeout(() => {
-//       const stop = setInterval(() => {
-//         toggleClass.value = !toggleClass.value;
-//       }, 500);
-//       setTimeout(() => {
-//         clearInterval(stop);
-//         toggleClass.value = false;
-//       }, 3000);
-//     }, 1000 * timeMove.value);
-//     initialSeconds = tasks.value;
-//   }
-//   if (initialSeconds > tasks.value) {
-//     // console.log("Время анимации вниз", initialSeconds - tasks.value);
-//     translateY.value = -heightElevator.value.clientHeight * (newTasks - 1);
-//     timeMove.value = initialSeconds - tasks.value;
-//     setTimeout(() => {
-//       const stop = setInterval(() => {
-//         toggleClass.value = !toggleClass.value;
-//       }, 500);
-//       setTimeout(() => {
-//         toggleClass.value = false;
-//         clearInterval(stop);
-//       }, 3000);
-//     }, 1000 * timeMove.value);
-//     initialSeconds = tasks.value;
-//   }
-// };
-// watch(tasks, (newTasks) => {
-//   handleMove(newTasks);
-// });
 </script>
 
 <style lang="css" scoped>
