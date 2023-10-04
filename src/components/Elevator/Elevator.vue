@@ -4,66 +4,73 @@
     class="elevator"
     :style="{
       transform: `translateY(${translateY}px)`,
-      transition: `transform ${timeMove}s linear`,
+      transition: `transform ${elevatorInfo.timeMove}s linear`,
     }"
     :class="!toggleClass ? '' : 'inactive'"
   >
-    <span>Лифт</span>
+    <div class="elevator__floor">
+      <span class="">Этаж-{{ c }}</span>
+    </div>
+
+    <span class="elevator__doors">Лифт-{{ elevatorDoors }}</span>
   </div>
 </template>
 
 <script setup>
 import { toRefs, watch, ref } from "vue";
+import { elevatorMotionHandler } from "../../helpers/createElevator";
 const heightElevator = ref(null);
+const elevatorDoors = ref("Закрыт");
 const props = defineProps({
-  floorPosition: Number,
+  elevatorInfo: Object,
 });
-const { floorPosition } = toRefs(props);
+const { elevatorInfo } = toRefs(props);
 const translateY = ref(0);
-const timeMove = ref(1);
 let initialSeconds = 1;
 let toggleClass = ref(false);
+let c = ref(initialSeconds);
 const animationElevator = (newFloorPosition) => {
-  if (initialSeconds < floorPosition.value) {
-    translateY.value =
-      -heightElevator.value.clientHeight * (newFloorPosition - 1);
-    timeMove.value = floorPosition.value - initialSeconds;
+  let n = initialSeconds;
+
+  translateY.value =
+    -heightElevator.value.clientHeight * (newFloorPosition - 1);
+  const animateFloorPosition = setInterval(() => {
+    if (n < newFloorPosition) {
+      c.value += 1;
+      console.log(c.value);
+    }
+    if (n > newFloorPosition) {
+      c.value -= 1;
+      console.log(c.value);
+    }
+  }, 1000);
+
+  setTimeout(() => {
+    elevatorDoors.value = "открыт";
+    const stop = setInterval(() => {
+      toggleClass.value = !toggleClass.value;
+    }, 500);
     setTimeout(() => {
-      const stop = setInterval(() => {
-        toggleClass.value = !toggleClass.value;
-      }, 500);
-      setTimeout(() => {
-        clearInterval(stop);
-        toggleClass.value = false;
-      }, 3000);
-    }, 1000 * timeMove.value);
-    initialSeconds = floorPosition.value;
-  }
-  if (initialSeconds > floorPosition.value) {
-    translateY.value =
-      -heightElevator.value.clientHeight * (newFloorPosition - 1);
-    timeMove.value = initialSeconds - floorPosition.value;
-    setTimeout(() => {
-      const stop = setInterval(() => {
-        toggleClass.value = !toggleClass.value;
-      }, 500);
-      setTimeout(() => {
-        clearInterval(stop);
-        toggleClass.value = false;
-      }, 3000);
-    }, 1000 * timeMove.value);
-    initialSeconds = floorPosition.value;
-  }
+      clearInterval(stop);
+      toggleClass.value = false;
+      elevatorDoors.value = "закрыт";
+    }, 3000);
+    clearInterval(animateFloorPosition);
+  }, 1000 * elevatorInfo.value.timeMove);
+  initialSeconds = elevatorInfo.value.floorPosition;
 };
-watch(floorPosition, (newFloorPosition) => {
-  animationElevator(newFloorPosition);
-});
+watch(
+  () => elevatorInfo.value.floorPosition,
+  (newFloorPosition) => {
+    animationElevator(newFloorPosition);
+  }
+);
 </script>
 
 <style lang="css" scoped>
 .elevator {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   color: white;
   width: 100%;
@@ -79,5 +86,16 @@ watch(floorPosition, (newFloorPosition) => {
 }
 .inactive {
   background-color: aquamarine;
+}
+.elevator__floor {
+  margin-top: 1em;
+  margin-left: 2em;
+  margin-right: 2em;
+  padding: 0 1em;
+  display: flex;
+  background-color: #38bdf8;
+}
+.elevator__doors {
+  margin-top: 2em;
 }
 </style>

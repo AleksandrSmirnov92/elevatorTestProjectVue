@@ -1,6 +1,6 @@
 <template>
   <div class="shaft">
-    <Elevator :floorPosition="floorPosition" />
+    <Elevator :elevatorInfo="elevatorInfo" />
   </div>
 </template>
 
@@ -8,9 +8,9 @@
 import Elevator from "../Elevator/Elevator.vue";
 import { toRefs, toRef } from "vue";
 const props = defineProps({
-  floorPosition: { type: Number },
+  elevatorInfo: Object,
 });
-const { tasks, currentFloor } = toRefs(props);
+const { elevatorInfo } = toRefs(props);
 </script>
 
 <style lang="css" scoped>

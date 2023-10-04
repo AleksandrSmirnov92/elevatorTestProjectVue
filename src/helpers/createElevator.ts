@@ -25,11 +25,9 @@ export class Elevator {
       return;
     }
     this.floorPosition = floorNumber ? floorNumber : task;
-    this.timeMove = elevatorMotionHandler(
-      task,
-      this.initialSeconds,
-      this.timeMove
-    );
+    this.timeMove = elevatorMotionHandler(task, this.initialSeconds)
+      ? task - this.initialSeconds
+      : this.initialSeconds - task;
     this.initialSeconds = task;
     this.currentTimer = setTimeout(() => {
       this.currentTimer = null;
@@ -38,17 +36,15 @@ export class Elevator {
     }, 1000 * (this.timeMove + 3));
   }
 }
-function elevatorMotionHandler(
+export function elevatorMotionHandler(
   currentSeconds: number,
-  initialSeconds: number,
-  timeMove: number
+  initialSeconds: number
+  // timeMove: number
 ) {
   if (initialSeconds < currentSeconds) {
-    timeMove = currentSeconds - initialSeconds;
+    return true;
   }
   if (initialSeconds > currentSeconds) {
-    timeMove = initialSeconds - currentSeconds;
+    return false;
   }
-
-  return timeMove;
 }
