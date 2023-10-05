@@ -51,7 +51,7 @@
 <script setup>
 import { toRefs, watch, ref } from "vue";
 import { elevatorMotionHandler } from "../../helpers/createElevator";
-import { CIcon } from "@coreui/icons-vue";
+// import { CIcon } from "@coreui/icons-vue";
 import { cilChevronDoubleDown, cilChevronDoubleUp } from "@coreui/icons";
 const props = defineProps({
   elevatorInfo: Object,
