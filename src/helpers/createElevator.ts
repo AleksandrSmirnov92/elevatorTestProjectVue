@@ -6,6 +6,8 @@ export class Elevator {
   initialSeconds: number;
   timeMove: number;
   currentTimer: any;
+  elevatorDirection: boolean | null;
+  numberOfFloors: number;
   constructor(id: number) {
     this.id = id;
     this.floorPosition = 1;
@@ -13,8 +15,10 @@ export class Elevator {
     this.initialSeconds = 1;
     this.timeMove = 1;
     this.currentTimer = null;
+    this.elevatorDirection = true;
+    this.numberOfFloors = 1;
   }
-  activated(floorNumber?: number | null) {
+  activated(floorNumber?: number | null, floorsCount?: number | null) {
     this.active = true;
     if (this.currentTimer) {
       return;
@@ -24,13 +28,18 @@ export class Elevator {
       this.active = false;
       return;
     }
+    this.numberOfFloors = task ?? 1;
     this.floorPosition = floorNumber ? floorNumber : task;
     this.timeMove = elevatorMotionHandler(task, this.initialSeconds)
       ? task - this.initialSeconds
       : this.initialSeconds - task;
+    this.elevatorDirection = elevatorMotionHandler(task, this.initialSeconds);
     this.initialSeconds = task;
     this.currentTimer = setTimeout(() => {
       this.currentTimer = null;
+      // console.log(this.elevatorDirection);
+      // this.elevatorDirection =
+      //   arrowDirection(task, this.numberOfFloors) ?? this.elevatorDirection;
       this.activated();
       console.log("Анимация прошла", task);
     }, 1000 * (this.timeMove + 3));
@@ -39,12 +48,23 @@ export class Elevator {
 export function elevatorMotionHandler(
   currentSeconds: number,
   initialSeconds: number
-  // timeMove: number
-) {
+): boolean | null {
+  let result = null;
   if (initialSeconds < currentSeconds) {
-    return true;
+    result = true;
   }
   if (initialSeconds > currentSeconds) {
-    return false;
+    result = false;
+  }
+  return result;
+}
+function arrowDirection(floorPosition: number, numberOfFloors: number) {
+  let result = null;
+  if (floorPosition === numberOfFloors) {
+    return (result = false);
+  } else if (floorPosition === 1) {
+    return (result = true);
+  } else {
+    return result;
   }
 }

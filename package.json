@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-vue": "^2.0.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {

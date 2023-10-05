@@ -35,7 +35,7 @@ const clickFloor = (floorNumber: number) => {
     findClosestInactiveElement(
       buildingInfo.value.shaftCount,
       floorNumber
-    ).activated(floorNumber);
+    ).activated(floorNumber, buildingInfo.value.floorsCount.length);
   }
 };
 </script>
