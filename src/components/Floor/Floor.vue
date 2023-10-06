@@ -1,11 +1,19 @@
 <template>
-  <div class="floor">
+  <div class="floor elevatorHeight">
     <span class="floor-number">Этаж {{ floorNumber }}</span>
-    <button class="floor-btn" @click="$emit('clickFloor', getValue())"></button>
+    <button
+      class="floor-btn"
+      :style="
+        callQueueActive.includes(floorNumber) ? 'background-color:#22c55e' : ''
+      "
+      @click="$emit('clickFloor', getValue())"
+      :disabled="callQueueActive.includes(floorNumber)"
+    ></button>
   </div>
 </template>
 
 <script setup>
+import { callQueueActive } from "../../helpers/createElevator.ts";
 import { toRefs, watch } from "vue";
 
 const props = defineProps({
@@ -25,7 +33,6 @@ const getValue = () => {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
   border-bottom: 1px solid black;
 }
 .floor-number {

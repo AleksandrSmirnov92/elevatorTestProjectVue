@@ -1,70 +1,69 @@
-export const callQueue: number[] = [];
+import { ref } from "vue";
+export const callQueue = [];
+
+export const callQueueActive = ref([]);
 export class Elevator {
   id: number;
-  floorPosition: number;
+  floorPosition: { num: number };
   active: boolean;
   initialSeconds: number;
   timeMove: number;
   currentTimer: any;
-  elevatorDirection: boolean | null;
-  numberOfFloors: number;
+  elevatorDirection: boolean;
+  houseHeight: number;
   constructor(id: number) {
     this.id = id;
-    this.floorPosition = 1;
+    this.floorPosition = { num: 1 };
     this.active = false;
     this.initialSeconds = 1;
     this.timeMove = 1;
     this.currentTimer = null;
     this.elevatorDirection = true;
-    this.numberOfFloors = 1;
+    this.houseHeight = 1;
   }
-  activated(floorNumber?: number | null, floorsCount?: number | null) {
+  activated(floorNumber?: number | null, cFloors?: number) {
     this.active = true;
     if (this.currentTimer) {
       return;
     }
+
     const task = callQueue.shift();
     if (task == null) {
       this.active = false;
       return;
     }
-    this.numberOfFloors = task ?? 1;
-    this.floorPosition = floorNumber ? floorNumber : task;
+    this.houseHeight = cFloors ?? this.houseHeight;
+    this.floorPosition = floorNumber ? { num: floorNumber } : { num: task };
+    this.elevatorDirection = elevatorMotionHandler(task, this.initialSeconds);
     this.timeMove = elevatorMotionHandler(task, this.initialSeconds)
       ? task - this.initialSeconds
       : this.initialSeconds - task;
-    this.elevatorDirection = elevatorMotionHandler(task, this.initialSeconds);
     this.initialSeconds = task;
+    console.log(this.timeMove);
     this.currentTimer = setTimeout(() => {
       this.currentTimer = null;
-      // console.log(this.elevatorDirection);
-      // this.elevatorDirection =
-      //   arrowDirection(task, this.numberOfFloors) ?? this.elevatorDirection;
+
+      if (this.houseHeight === this.floorPosition.num) {
+        this.elevatorDirection = false;
+      }
+      if (this.floorPosition.num === 1) {
+        this.elevatorDirection = true;
+      }
       this.activated();
       console.log("Анимация прошла", task);
+      callQueueActive.value = callQueueActive.value.filter(
+        (item) => item !== task
+      );
+      localStorage.setItem("activeCall", JSON.stringify(callQueueActive.value));
     }, 1000 * (this.timeMove + 3));
   }
 }
 export function elevatorMotionHandler(
   currentSeconds: number,
   initialSeconds: number
-): boolean | null {
-  let result = null;
-  if (initialSeconds < currentSeconds) {
-    result = true;
-  }
+): boolean {
   if (initialSeconds > currentSeconds) {
-    result = false;
+    return false;
   }
-  return result;
-}
-function arrowDirection(floorPosition: number, numberOfFloors: number) {
-  let result = null;
-  if (floorPosition === numberOfFloors) {
-    return (result = false);
-  } else if (floorPosition === 1) {
-    return (result = true);
-  } else {
-    return result;
-  }
+  return true;
 }

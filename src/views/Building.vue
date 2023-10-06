@@ -22,21 +22,36 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { callQueue, Elevator } from "../helpers/createElevator";
+import {
+  callQueue,
+  callQueueActive,
+  Elevator,
+} from "../helpers/createElevator";
 import { findClosestInactiveElement } from "../helpers/findClosestInactiveElement";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 const buildingInfo = ref({
-  shaftCount: [new Elevator(1)],
+  shaftCount:
+    JSON.parse(localStorage.getItem("shaftCount")) !== null &&
+    JSON.parse(localStorage.getItem("shaftCount")).length > 0
+      ? JSON.parse(localStorage.getItem("shaftCount"))
+      : [new Elevator(1), new Elevator(2)],
   floorsCount: [1, 2, 3, 4, 5],
 });
 const clickFloor = (floorNumber: number) => {
+  console.log(JSON.parse(localStorage.getItem("shaftCount")));
   callQueue.push(floorNumber);
+  callQueueActive.value.push(floorNumber);
+  localStorage.setItem("activeCall", JSON.stringify(callQueueActive.value));
   if (buildingInfo.value.shaftCount.find((item) => item.active === false)) {
     findClosestInactiveElement(
       buildingInfo.value.shaftCount,
       floorNumber
     ).activated(floorNumber, buildingInfo.value.floorsCount.length);
   }
+  localStorage.setItem(
+    "shaftCount",
+    JSON.stringify(buildingInfo.value.shaftCount)
+  );
 };
 </script>
 

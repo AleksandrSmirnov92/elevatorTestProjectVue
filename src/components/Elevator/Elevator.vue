@@ -1,7 +1,7 @@
 <template>
   <div
     ref="heightElevator"
-    class="elevator"
+    class="elevator elevatorHeight"
     :style="{
       transform: `translateY(${translateY}px)`,
       transition: `transform ${elevatorInfo.timeMove}s linear`,
@@ -12,7 +12,10 @@
         class="elevator__floor"
         :style="toggleClass ? 'background-color:#6ee7b7' : ''"
       >
-        <span class="floor">Этаж-{{ c }}</span>
+        <div class="elevator__floor-screen">
+          <span class="floor-screen__text">Этаж- </span
+          ><span class="floor-screen__number">{{ c }}</span>
+        </div>
 
         <CIcon
           v-if="elevatorInfo.elevatorDirection"
@@ -22,7 +25,7 @@
           class="arrow"
         />
         <CIcon
-          v-else
+          v-if="!elevatorInfo.elevatorDirection"
           key="down"
           :icon="cilChevronDoubleDown"
           width="16"
@@ -49,14 +52,12 @@
 </template>
 
 <script setup>
-import { toRefs, watch, ref } from "vue";
+import { toRefs, watch, ref, onMounted } from "vue";
 import { elevatorMotionHandler } from "../../helpers/createElevator";
-// import { CIcon } from "@coreui/icons-vue";
 import { cilChevronDoubleDown, cilChevronDoubleUp } from "@coreui/icons";
 const props = defineProps({
   elevatorInfo: Object,
 });
-
 const { elevatorInfo } = toRefs(props);
 const heightElevator = ref(null);
 const translateY = ref(0);
@@ -71,11 +72,9 @@ const animationElevator = (newFloorPosition) => {
   const animateFloorPosition = setInterval(() => {
     if (n < newFloorPosition) {
       c.value += 1;
-      console.log(c.value);
     }
     if (n > newFloorPosition) {
       c.value -= 1;
-      console.log(c.value);
     }
   }, 1000);
 
@@ -91,24 +90,25 @@ const animationElevator = (newFloorPosition) => {
     }, 3000);
     clearInterval(animateFloorPosition);
   }, 1000 * elevatorInfo.value.timeMove);
-  initialSeconds = elevatorInfo.value.floorPosition;
+  initialSeconds = elevatorInfo.value.floorPosition.num;
 };
 watch(
   () => elevatorInfo.value.floorPosition,
   (newFloorPosition) => {
-    animationElevator(newFloorPosition);
+    animationElevator(newFloorPosition.num);
   }
 );
+onMounted(() => {
+  console.log(elevatorInfo.value);
+});
 </script>
 
 <style lang="css" scoped>
 .elevator {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   color: white;
   width: 100%;
-  height: calc((100vh / 5));
   align-self: flex-end;
   background-color: #cbd5e1;
 }
@@ -130,9 +130,16 @@ watch(
   justify-content: space-around;
   background-color: #38bdf8;
 }
-.floor {
-  margin-right: 0.5em;
+.elevator__floor-screen {
+  display: flex;
+  margin-right: 0.4em;
+  margin-left: 0.4em;
+}
+.floor-screen__text {
   margin-left: 0.5em;
+}
+.floor-screen__number {
+  width: 0.7em;
 }
 .arrow {
   margin-right: 0.5em;
