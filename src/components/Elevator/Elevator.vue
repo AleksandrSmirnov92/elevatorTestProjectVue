@@ -3,7 +3,7 @@
     ref="heightElevator"
     class="elevator elevatorHeight"
     :style="{
-      transform: `translateY(${translateY}px)`,
+      transform: `translateY(${elevatorInfo.translateY}px)`,
       transition: `transform ${elevatorInfo.timeMove}s linear`,
     }"
   >
@@ -60,15 +60,17 @@ const props = defineProps({
 });
 const { elevatorInfo } = toRefs(props);
 const heightElevator = ref(null);
-const translateY = ref(0);
+// const translateY = ref(0);
 const translateX = ref(0);
 let initialSeconds = 1;
 let toggleClass = ref(false);
 let c = ref(initialSeconds);
 const animationElevator = (newFloorPosition) => {
   let n = initialSeconds;
-  translateY.value =
+  elevatorInfo.value.translateY =
     -heightElevator.value.clientHeight * (newFloorPosition - 1);
+  // translateY.value =
+  //   -heightElevator.value.clientHeight * (newFloorPosition - 1);
   const animateFloorPosition = setInterval(() => {
     if (n < newFloorPosition) {
       c.value += 1;

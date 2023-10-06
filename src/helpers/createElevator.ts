@@ -11,6 +11,7 @@ export class Elevator {
   currentTimer: any;
   elevatorDirection: boolean;
   houseHeight: number;
+  translateY: number;
   constructor(id: number) {
     this.id = id;
     this.floorPosition = { num: 1 };
@@ -20,6 +21,7 @@ export class Elevator {
     this.currentTimer = null;
     this.elevatorDirection = true;
     this.houseHeight = 1;
+    this.translateY = 0;
   }
   activated(floorNumber?: number | null, cFloors?: number) {
     this.active = true;
