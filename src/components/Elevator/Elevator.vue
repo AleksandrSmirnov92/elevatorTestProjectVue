@@ -64,7 +64,7 @@ const heightElevator = ref(null);
 const translateX = ref(0);
 let initialSeconds = 1;
 let toggleClass = ref(false);
-let c = ref(initialSeconds);
+let c = ref(elevatorInfo.value.floorPosition.num);
 const animationElevator = (newFloorPosition) => {
   let n = initialSeconds;
   elevatorInfo.value.translateY =

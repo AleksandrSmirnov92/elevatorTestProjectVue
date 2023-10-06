@@ -26,17 +26,11 @@ import {
   callQueue,
   callQueueActive,
   Elevator,
+  buildingInfo,
 } from "../helpers/createElevator";
 import { findClosestInactiveElement } from "../helpers/findClosestInactiveElement";
 import { ref, onMounted } from "vue";
-const buildingInfo = ref({
-  shaftCount:
-    JSON.parse(localStorage.getItem("shaftCount")) !== null &&
-    JSON.parse(localStorage.getItem("shaftCount")).length > 0
-      ? JSON.parse(localStorage.getItem("shaftCount"))
-      : [new Elevator(1), new Elevator(2)],
-  floorsCount: [1, 2, 3, 4, 5],
-});
+
 const clickFloor = (floorNumber: number) => {
   console.log(JSON.parse(localStorage.getItem("shaftCount")));
   callQueue.push(floorNumber);

@@ -1,7 +1,4 @@
 import { ref } from "vue";
-export const callQueue = [];
-
-export const callQueueActive = ref([]);
 export class Elevator {
   id: number;
   floorPosition: { num: number };
@@ -60,6 +57,12 @@ export class Elevator {
     }, 1000 * (this.timeMove + 3));
   }
 }
+export const callQueue = [];
+export const callQueueActive = ref([]);
+export const buildingInfo = ref({
+  shaftCount: [new Elevator(1), new Elevator(2)],
+  floorsCount: [1, 2, 3, 4, 5],
+});
 export function elevatorMotionHandler(
   currentSeconds: number,
   initialSeconds: number
