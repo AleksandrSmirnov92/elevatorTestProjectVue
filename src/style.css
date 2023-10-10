@@ -108,6 +108,3 @@ label {
 legend {
   display: block;
 }
-.elevatorHeight {
-  height: calc(100vh / 5);
-}

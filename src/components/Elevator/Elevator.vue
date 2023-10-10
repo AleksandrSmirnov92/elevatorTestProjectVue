@@ -1,11 +1,14 @@
 <template>
   <div
     ref="heightElevator"
-    class="elevator elevatorHeight"
-    :style="{
-      transform: `translateY(${elevatorInfo.translateY}px)`,
-      transition: `transform ${elevatorInfo.timeMove}s linear`,
-    }"
+    class="elevator"
+    :style="[
+      {
+        transform: `translateY(${elevatorInfo.translateY}px)`,
+        transition: `transform ${elevatorInfo.timeMove}s linear`,
+      },
+      `height:calc(100vh/${floorHeight})`,
+    ]"
   >
     <div class="elevator__floor-container">
       <div
@@ -14,7 +17,7 @@
       >
         <div class="elevator__floor-screen">
           <span class="floor-screen__text">Этаж- </span
-          ><span class="floor-screen__number">{{ c }}</span>
+          ><span class="floor-screen__number">{{ currentFloorPosition }}</span>
         </div>
 
         <CIcon
@@ -37,13 +40,13 @@
     <div class="elevator__doors">
       <div
         :style="{
-          transform: `translateX(${-translateX}px)`,
+          transform: `translateX(${-elevatorInfo.translateX}px)`,
           transition: `transform ${1}s linear`,
         }"
       ></div>
       <div
         :style="{
-          transform: `translateX(${translateX}px)`,
+          transform: `translateX(${elevatorInfo.translateX}px)`,
           transition: `transform ${1}s linear`,
         }"
       ></div>
@@ -57,40 +60,33 @@ import { elevatorMotionHandler } from "../../helpers/createElevator";
 import { cilChevronDoubleDown, cilChevronDoubleUp } from "@coreui/icons";
 const props = defineProps({
   elevatorInfo: Object,
+  floorHeight: Number,
 });
 const { elevatorInfo } = toRefs(props);
 const heightElevator = ref(null);
-// const translateY = ref(0);
-const translateX = ref(0);
-let initialSeconds = 1;
+let initialSeconds = elevatorInfo.value.initialSeconds;
 let toggleClass = ref(false);
-let c = ref(elevatorInfo.value.floorPosition.num);
+let currentFloorPosition = ref(elevatorInfo.value.floorPosition.num);
 const animationElevator = (newFloorPosition) => {
-  let n = initialSeconds;
+  let startInitialSeconds = initialSeconds;
   elevatorInfo.value.translateY =
     -heightElevator.value.clientHeight * (newFloorPosition - 1);
-  // translateY.value =
-  //   -heightElevator.value.clientHeight * (newFloorPosition - 1);
-  const animateFloorPosition = setInterval(() => {
-    if (n < newFloorPosition) {
-      c.value += 1;
-    }
-    if (n > newFloorPosition) {
-      c.value -= 1;
-    }
+  const counterFloorPosition = setInterval(() => {
+    elevatorMotionHandler(startInitialSeconds, newFloorPosition)
+      ? (currentFloorPosition.value -= 1)
+      : (currentFloorPosition.value += 1);
   }, 1000);
-
   setTimeout(() => {
-    translateX.value = 10;
-    const stop = setInterval(() => {
+    elevatorInfo.value.translateX = 10;
+    const openDoorsElevator = setInterval(() => {
       toggleClass.value = !toggleClass.value;
     }, 500);
-    setTimeout(() => (translateX.value = 0), 2000);
+    setTimeout(() => (elevatorInfo.value.translateX = 0), 2000);
     setTimeout(() => {
-      clearInterval(stop);
+      clearInterval(openDoorsElevator);
       toggleClass.value = false;
     }, 3000);
-    clearInterval(animateFloorPosition);
+    clearInterval(counterFloorPosition);
   }, 1000 * elevatorInfo.value.timeMove);
   initialSeconds = elevatorInfo.value.floorPosition.num;
 };
@@ -100,9 +96,6 @@ watch(
     animationElevator(newFloorPosition.num);
   }
 );
-onMounted(() => {
-  console.log(elevatorInfo.value);
-});
 </script>
 
 <style lang="css" scoped>

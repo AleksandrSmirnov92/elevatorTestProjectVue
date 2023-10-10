@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { callQueue, callQueueActive } from "../store/index";
+import { ElevatorType } from "../types/types";
 export class Elevator {
   id: number;
   floorPosition: { num: number };
@@ -9,16 +10,25 @@ export class Elevator {
   elevatorDirection: boolean;
   houseHeight: number;
   translateY: number;
-  constructor(id: number) {
+  translateX: number;
+
+  constructor(id: number, localStorage?: ElevatorType | null) {
     this.id = id;
-    this.floorPosition = { num: 1 };
-    this.active = false;
-    this.initialSeconds = 1;
-    this.timeMove = 1;
-    this.currentTimer = null;
-    this.elevatorDirection = true;
-    this.houseHeight = 1;
-    this.translateY = 0;
+    this.floorPosition = localStorage
+      ? localStorage.floorPosition
+      : {
+          num: 1,
+        };
+    this.active = localStorage ? localStorage.active : false;
+    this.initialSeconds = localStorage ? localStorage.initialSeconds : 1;
+    this.timeMove = localStorage ? localStorage.timeMove : 1;
+    this.currentTimer = localStorage ? localStorage.currentTimer : null;
+    this.elevatorDirection = localStorage
+      ? localStorage.elevatorDirection
+      : true;
+    this.houseHeight = localStorage ? localStorage.houseHeight : 1;
+    this.translateY = localStorage ? localStorage.translateY : 0;
+    this.translateX = 0;
   }
   activated(floorNumber?: number | null, cFloors?: number) {
     this.active = true;
@@ -27,6 +37,7 @@ export class Elevator {
     }
 
     const task = callQueue.shift();
+
     if (task == null) {
       this.active = false;
       return;
@@ -38,31 +49,29 @@ export class Elevator {
       ? task - this.initialSeconds
       : this.initialSeconds - task;
     this.initialSeconds = task;
-    console.log(this.timeMove);
     this.currentTimer = setTimeout(() => {
       this.currentTimer = null;
-
-      if (this.houseHeight === this.floorPosition.num) {
-        this.elevatorDirection = false;
-      }
-      if (this.floorPosition.num === 1) {
-        this.elevatorDirection = true;
-      }
+      this.elevatorDirection =
+        floorPosition(this.houseHeight, this.floorPosition.num) ??
+        this.elevatorDirection;
       this.activated();
       console.log("Анимация прошла", task);
       callQueueActive.value = callQueueActive.value.filter(
         (item) => item !== task
       );
-      localStorage.setItem("activeCall", JSON.stringify(callQueueActive.value));
     }, 1000 * (this.timeMove + 3));
   }
 }
-export const callQueue = [];
-export const callQueueActive = ref([]);
-export const buildingInfo = ref({
-  shaftCount: [new Elevator(1), new Elevator(2)],
-  floorsCount: [1, 2, 3, 4, 5],
-});
+export function floorPosition(houseHeight: number, floorPosition: number) {
+  let result = null;
+  if (houseHeight === floorPosition) {
+    result = false;
+  }
+  if (floorPosition === 1) {
+    result = true;
+  }
+  return result;
+}
 export function elevatorMotionHandler(
   currentSeconds: number,
   initialSeconds: number
@@ -71,4 +80,11 @@ export function elevatorMotionHandler(
     return false;
   }
   return true;
+}
+export function valueFromLocalStorage(storage: ElevatorType[], id: number) {
+  if (storage) {
+    let obj = storage.find((item) => item.id === id);
+    return obj;
+  }
+  return null;
 }

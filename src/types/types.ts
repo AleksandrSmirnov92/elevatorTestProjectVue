@@ -1,9 +1,12 @@
-export default interface ElevatorType {
+export interface ElevatorType {
   id: number;
-  floorPosition: number;
+  floorPosition: { num: number };
   active: boolean;
   initialSeconds: number;
   timeMove: number;
   currentTimer: any;
-  activated: (floorNumber?: number | null) => void;
+  elevatorDirection: boolean;
+  houseHeight: number;
+  translateY: number;
+  translateX: number;
 }

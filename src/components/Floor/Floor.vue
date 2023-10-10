@@ -1,5 +1,5 @@
 <template>
-  <div class="floor elevatorHeight">
+  <div class="floor" :style="`height:calc(100vh/${floorHeight})`">
     <span class="floor-number">Этаж {{ floorNumber }}</span>
     <button
       class="floor-btn"
@@ -13,11 +13,12 @@
 </template>
 
 <script setup>
-import { callQueueActive } from "../../helpers/createElevator.ts";
+import { callQueueActive } from "../../store/index.ts";
 import { toRefs, watch } from "vue";
 
 const props = defineProps({
   floorNumber: { type: Number, required: true },
+  floorHeight: Number,
 });
 
 const { floorNumber } = toRefs(props);
