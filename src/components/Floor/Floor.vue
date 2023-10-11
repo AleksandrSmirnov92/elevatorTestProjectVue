@@ -33,7 +33,9 @@ const getValue = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   width: 100%;
+
   border-bottom: 1px solid black;
 }
 .floor-number {

@@ -79,4 +79,10 @@ onMounted(() => {
   background-color: white;
   border-right: 1px solid black;
 }
+@media (max-width: 660px) {
+  .bulding-container {
+    min-width: 700px;
+    height: 100vh;
+  }
+}
 </style>
