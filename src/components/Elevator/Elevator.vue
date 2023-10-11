@@ -4,10 +4,10 @@
     class="elevator"
     :style="[
       {
-        transform: `translateY(${elevatorInfo.translateY}px)`,
-        transition: `transform ${elevatorInfo.timeMove}s linear`,
+        transform: `translateY(${elevatorInfo!.translateY}px)`,
+        transition: `transform ${elevatorInfo!.timeMove}s linear`,
       },
-      `height:calc(100vh/${floorHeight})`,
+      `height:calc(100vh/${floorHeight!})`,
     ]"
   >
     <div class="elevator__floor-container">
@@ -21,14 +21,14 @@
         </div>
 
         <CIcon
-          v-if="elevatorInfo.elevatorDirection"
+          v-if="elevatorInfo!.elevatorDirection"
           :icon="cilChevronDoubleUp"
           key="up"
           width="16"
           class="arrow"
         />
         <CIcon
-          v-if="!elevatorInfo.elevatorDirection"
+          v-if="!elevatorInfo!.elevatorDirection"
           key="down"
           :icon="cilChevronDoubleDown"
           width="16"
@@ -40,13 +40,13 @@
     <div class="elevator__doors">
       <div
         :style="{
-          transform: `translateX(${-elevatorInfo.translateX}px)`,
+          transform: `translateX(${-elevatorInfo!.translateX}px)`,
           transition: `transform ${1}s linear`,
         }"
       ></div>
       <div
         :style="{
-          transform: `translateX(${elevatorInfo.translateX}px)`,
+          transform: `translateX(${elevatorInfo!.translateX}px)`,
           transition: `transform ${1}s linear`,
         }"
       ></div>
@@ -54,46 +54,47 @@
   </div>
 </template>
 
-<script setup>
-import { toRefs, watch, ref, onMounted } from "vue";
+<script lang="ts" setup>
+import { toRefs, watch, ref } from "vue";
 import { elevatorMotionHandler } from "../../helpers/createElevator";
 import { cilChevronDoubleDown, cilChevronDoubleUp } from "@coreui/icons";
+
 const props = defineProps({
   elevatorInfo: Object,
   floorHeight: Number,
 });
-const { elevatorInfo } = toRefs(props);
-const heightElevator = ref(null);
-let initialSeconds = elevatorInfo.value.initialSeconds;
+const { elevatorInfo, floorHeight } = toRefs(props);
+const heightElevator = ref<any>(null);
+let initialSeconds = elevatorInfo!.value!.initialSeconds;
 let toggleClass = ref(false);
-let currentFloorPosition = ref(elevatorInfo.value.floorPosition.num);
-const animationElevator = (newFloorPosition) => {
+let currentFloorPosition = ref(elevatorInfo!.value!.floorPosition!.num);
+const animationElevator = (newFloorPosition: number) => {
   let startInitialSeconds = initialSeconds;
-  elevatorInfo.value.translateY =
-    -heightElevator.value.clientHeight * (newFloorPosition - 1);
+  elevatorInfo!.value!.translateY =
+    -heightElevator!.value!.clientHeight * (newFloorPosition - 1);
   const counterFloorPosition = setInterval(() => {
     elevatorMotionHandler(startInitialSeconds, newFloorPosition)
-      ? (currentFloorPosition.value -= 1)
-      : (currentFloorPosition.value += 1);
+      ? (currentFloorPosition!.value -= 1)
+      : (currentFloorPosition!.value += 1);
   }, 1000);
   setTimeout(() => {
-    elevatorInfo.value.translateX = 10;
+    elevatorInfo!.value!.translateX = 10;
     const openDoorsElevator = setInterval(() => {
       toggleClass.value = !toggleClass.value;
     }, 500);
-    setTimeout(() => (elevatorInfo.value.translateX = 0), 2000);
+    setTimeout(() => (elevatorInfo!.value!.translateX = 0), 2000);
     setTimeout(() => {
       clearInterval(openDoorsElevator);
       toggleClass.value = false;
     }, 3000);
     clearInterval(counterFloorPosition);
-  }, 1000 * elevatorInfo.value.timeMove);
-  initialSeconds = elevatorInfo.value.floorPosition.num;
+  }, 1000 * elevatorInfo!.value!.timeMove);
+  initialSeconds = elevatorInfo!.value!.floorPosition!.num;
 };
 watch(
-  () => elevatorInfo.value.floorPosition,
+  () => elevatorInfo!.value!.floorPosition,
   (newFloorPosition) => {
-    animationElevator(newFloorPosition.num);
+    animationElevator(newFloorPosition!.num);
   }
 );
 </script>

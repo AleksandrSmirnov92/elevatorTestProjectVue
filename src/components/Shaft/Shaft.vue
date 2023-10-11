@@ -4,14 +4,14 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import Elevator from "../Elevator/Elevator.vue";
-import { toRefs, toRef } from "vue";
+import { toRefs } from "vue";
 const props = defineProps({
   elevatorInfo: Object,
   floorHeight: Number,
 });
-// const { elevatorInfo, floorHeight } = toRefs(props);
+const { elevatorInfo, floorHeight } = toRefs(props);
 </script>
 
 <style lang="css" scoped>

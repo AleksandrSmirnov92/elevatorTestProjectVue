@@ -24,19 +24,19 @@
 <script lang="ts" setup>
 import Floor from "../components/Floor/Floor.vue";
 import Shaft from "../components/Shaft/Shaft.vue";
-import { callQueue, callQueueActive, buildingInfo } from "../store/index.ts";
+import { callQueue, callQueueActive, buildingInfo } from "../store/index";
 import { findClosestInactiveElement } from "../helpers/findClosestInactiveElement";
-import { floorPosition } from "../helpers/createElevator.ts";
-import { ref, onMounted, watch } from "vue";
+import { floorPosition } from "../helpers/createElevator";
+import { onMounted, watch } from "vue";
 
 const clickFloor = (floorNumber: number) => {
   callQueue.push(floorNumber);
   callQueueActive.value.push(floorNumber);
   if (buildingInfo.value.shaftCount.find((item) => item.active === false)) {
     findClosestInactiveElement(
-      buildingInfo.value.shaftCount,
+      buildingInfo!.value.shaftCount,
       floorNumber
-    ).activated(floorNumber, buildingInfo.value.floorsCount.length);
+    )!.activated(floorNumber, buildingInfo.value.floorsCount.length);
   }
 };
 watch(buildingInfo.value.shaftCount, (newValue) => {

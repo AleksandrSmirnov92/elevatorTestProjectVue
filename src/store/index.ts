@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { Elevator, valueFromLocalStorage } from "../helpers/createElevator";
-export const callQueue = [];
-export const callQueueActive = ref([]);
+export const callQueue: number[] = [];
+export const callQueueActive = ref<Number[]>([]);
 export const buildingInfo = ref({
   shaftCount: [
     new Elevator(

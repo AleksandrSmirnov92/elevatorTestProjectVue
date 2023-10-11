@@ -12,9 +12,9 @@
   </div>
 </template>
 
-<script setup>
-import { callQueueActive } from "../../store/index.ts";
-import { toRefs, watch } from "vue";
+<script lang="ts" setup>
+import { callQueueActive } from "../../store/index";
+import { toRefs } from "vue";
 
 const props = defineProps({
   floorNumber: { type: Number, required: true },

@@ -1,15 +1,5 @@
-export function findClosestInactiveElement(
-  arr: {
-    id: number;
-    floorPosition: { num: number };
-    active: boolean;
-    initialSeconds: number;
-    timeMove: number;
-    currentTimer: any;
-    activeted: () => void;
-  }[],
-  number: number
-) {
+import { Elevator } from "../helpers/createElevator";
+export function findClosestInactiveElement(arr: Elevator[], number: number) {
   let closestElement = null;
   let closestDifference = Infinity;
   for (const element of arr) {
