@@ -12,6 +12,14 @@ export const buildingInfo = ref({
       2,
       valueFromLocalStorage(JSON.parse(localStorage.getItem("shaftCount")!), 2)
     ),
+    new Elevator(
+      3,
+      valueFromLocalStorage(JSON.parse(localStorage.getItem("shaftCount")!), 3)
+    ),
+    new Elevator(
+      4,
+      valueFromLocalStorage(JSON.parse(localStorage.getItem("shaftCount")!), 4)
+    ),
   ],
-  floorsCount: [1, 2, 3, 4, 5],
+  floorsCount: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 });
