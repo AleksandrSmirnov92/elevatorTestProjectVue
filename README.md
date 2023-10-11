@@ -5,7 +5,7 @@ The application can be expanded to add as many floors and elevators as you like.
 ## Getting Started 	&#10071;	&#10071;	&#10071;
 Clone the repository
 ```
-git clone https://github.com/AleksandrSmirnov92/airTicketsProject.git
+git clone https://github.com/AleksandrSmirnov92/elevatorTestProjectVue.git
 ```
 Run these commands
 ```
