@@ -33,9 +33,7 @@ const getValue = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   width: 100%;
-
   border-bottom: 1px solid black;
 }
 .floor-number {
@@ -49,5 +47,7 @@ const getValue = () => {
 }
 .floor-btn:hover {
   opacity: 0.5;
+}
+@media (max-width: 460px) {
 }
 </style>

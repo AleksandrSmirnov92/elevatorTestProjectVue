@@ -76,7 +76,7 @@ const animationElevator = (newFloorPosition: number) => {
     elevatorMotionHandler(startInitialSeconds, newFloorPosition)
       ? (currentFloorPosition!.value -= 1)
       : (currentFloorPosition!.value += 1);
-  }, 1000);
+  }, 990);
   setTimeout(() => {
     elevatorInfo!.value!.translateX = 10;
     const openDoorsElevator = setInterval(() => {
@@ -101,13 +101,12 @@ const handlerHeight = () => {
   elevatorInfo!.value!.translateY =
     -heightElevator!.value!.clientHeight *
     (elevatorInfo!.value!.floorPosition.num - 1);
-  elevatorInfo!.value!.timeMove = 0.1;
+  elevatorInfo!.value!.timeMove = 0;
 };
 onMounted(() => {
   window.addEventListener("resize", handlerHeight);
 });
 onUnmounted(() => {
-  console.log("e");
   window.removeEventListener("resize", handlerHeight);
 });
 </script>
@@ -160,12 +159,32 @@ onUnmounted(() => {
   margin-left: 1em;
   margin-right: 1em;
   height: 100%;
-  /* background-color: green; */
 }
 .elevator__doors > div {
   border: 1px solid black;
   width: 20%;
   height: 100%;
   background-color: #94a3b8;
+}
+@media (max-width: 665px) {
+  .elevator__floor {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .floor-screen__text {
+    display: none;
+  }
+  .elevator__floor-container {
+    width: 100%;
+  }
+  .elevator__floor-screen {
+    justify-content: center;
+    width: 40px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .elevator__doors > div {
+    width: 40%;
+  }
 }
 </style>

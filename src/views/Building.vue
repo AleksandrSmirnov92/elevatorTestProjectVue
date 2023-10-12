@@ -57,9 +57,9 @@ onMounted(() => {
 .bulding-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  min-width: 700px;
+  height: 100vh;
   background-color: #d4d4d4;
+  overflow-x: hidden;
 }
 .bulding {
   width: 100%;
@@ -69,7 +69,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   width: 10%;
-  height: 100%;
   background-color: white;
 }
 
@@ -77,5 +76,32 @@ onMounted(() => {
   display: flex;
   background-color: white;
   border-right: 1px solid black;
+}
+@media (max-width: 665px) {
+  .bulding {
+    justify-content: space-between;
+  }
+  .building__shaft {
+    width: 50%;
+  }
+  .building__floors {
+    width: 50%;
+  }
+}
+@media (max-width: 460px) {
+  .building__shaft {
+    width: 60%;
+  }
+  .building__floors {
+    width: 40%;
+  }
+}
+@media (max-width: 370px) {
+  .building__shaft {
+    width: 80%;
+  }
+  .building__floors {
+    width: 20%;
+  }
 }
 </style>

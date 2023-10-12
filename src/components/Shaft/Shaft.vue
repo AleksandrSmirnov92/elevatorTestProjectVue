@@ -16,6 +16,7 @@ const { elevatorInfo, floorHeight } = toRefs(props);
 
 <style lang="css" scoped>
 .shaft {
+  background-color: white;
   border-left: 1px solid black;
   display: flex;
   width: 100%;
