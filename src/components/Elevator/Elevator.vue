@@ -127,6 +127,7 @@ onUnmounted(() => {
   background-color: #6ee7b7;
 }
 .elevator__floor-container {
+  display: flex;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
 }
@@ -175,13 +176,15 @@ onUnmounted(() => {
     display: none;
   }
   .elevator__floor-container {
+    justify-content: space-around;
     width: 100%;
+  }
+  .elevator__floor {
+    width: 80%;
   }
   .elevator__floor-screen {
     justify-content: center;
     width: 40px;
-    margin-left: 0;
-    margin-right: 0;
   }
   .elevator__doors > div {
     width: 40%;

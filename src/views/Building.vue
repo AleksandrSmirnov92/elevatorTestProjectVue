@@ -59,7 +59,6 @@ onMounted(() => {
   width: 100%;
   height: 100vh;
   background-color: #d4d4d4;
-  overflow-x: hidden;
 }
 .bulding {
   width: 100%;
@@ -82,21 +81,21 @@ onMounted(() => {
     justify-content: space-between;
   }
   .building__shaft {
-    width: 50%;
-  }
-  .building__floors {
-    width: 50%;
-  }
-}
-@media (max-width: 460px) {
-  .building__shaft {
     width: 60%;
   }
   .building__floors {
     width: 40%;
   }
 }
-@media (max-width: 370px) {
+@media (max-width: 470px) {
+  .building__shaft {
+    width: 70%;
+  }
+  .building__floors {
+    width: 30%;
+  }
+}
+@media (max-width: 390px) {
   .building__shaft {
     width: 80%;
   }
