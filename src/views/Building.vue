@@ -57,7 +57,8 @@ onMounted(() => {
 .bulding-container {
   display: flex;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  min-width: 700px;
   background-color: #d4d4d4;
 }
 .bulding {
@@ -67,7 +68,6 @@ onMounted(() => {
 .building__floors {
   display: flex;
   flex-direction: column;
-
   width: 10%;
   height: 100%;
   background-color: white;
@@ -75,14 +75,7 @@ onMounted(() => {
 
 .building__shaft {
   display: flex;
-
   background-color: white;
   border-right: 1px solid black;
-}
-@media (max-width: 660px) {
-  .bulding-container {
-    min-width: 700px;
-    height: 100vh;
-  }
 }
 </style>
