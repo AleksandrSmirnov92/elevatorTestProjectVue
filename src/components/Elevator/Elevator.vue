@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { toRefs, watch, ref } from "vue";
+import { toRefs, watch, ref, onMounted, onUnmounted } from "vue";
 import { elevatorMotionHandler } from "../../helpers/createElevator";
 import { cilChevronDoubleDown, cilChevronDoubleUp } from "@coreui/icons";
 
@@ -97,6 +97,19 @@ watch(
     animationElevator(newFloorPosition!.num);
   }
 );
+const handlerHeight = () => {
+  elevatorInfo!.value!.translateY =
+    -heightElevator!.value!.clientHeight *
+    (elevatorInfo!.value!.floorPosition.num - 1);
+  elevatorInfo!.value!.timeMove = 0.1;
+};
+onMounted(() => {
+  window.addEventListener("resize", handlerHeight);
+});
+onUnmounted(() => {
+  console.log("e");
+  window.removeEventListener("resize", handlerHeight);
+});
 </script>
 
 <style lang="css" scoped>
