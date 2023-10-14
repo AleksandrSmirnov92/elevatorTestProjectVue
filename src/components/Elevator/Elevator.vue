@@ -104,6 +104,7 @@ const handlerHeight = () => {
   elevatorInfo!.value!.timeMove = 0;
 };
 onMounted(() => {
+  handlerHeight();
   window.addEventListener("resize", handlerHeight);
 });
 onUnmounted(() => {
